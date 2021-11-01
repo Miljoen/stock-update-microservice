@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 import { typeDefs } from './graphql/schema'
 import { resolvers } from './graphql/resolvers'
 
@@ -9,9 +11,9 @@ const { SubscriptionServer } = require('subscriptions-transport-ws')
 const { makeExecutableSchema } = require('@graphql-tools/schema')
 
 ;(async () => {
-    const PORT = 4000
     const app = express()
     const httpServer = createServer(app)
+    const wsServer = createServer(app)
 
     const schema = makeExecutableSchema({ typeDefs, resolvers })
     const server = new ApolloServer({ schema })
@@ -22,15 +24,16 @@ const { makeExecutableSchema } = require('@graphql-tools/schema')
 
     SubscriptionServer.create(
         { schema, execute, subscribe },
-        { server: httpServer, path: server.graphqlPath },
+        { server: wsServer, path: server.graphqlPath },
     )
 
-    httpServer.listen(PORT, () => {
+    httpServer.listen(process.env.HTTP_PORT, () => {
         console.log(
-            `🚀 Query endpoint ready at http://localhost:${PORT}${server.graphqlPath}`,
-        )
-        console.log(
-            `🚀 Subscription endpoint ready at ws://localhost:${PORT}${server.graphqlPath}`,
+            `🚀 HTTP server ready at :${process.env.HTTP_PORT}${server.graphqlPath}`,
         )
     })
+
+    wsServer.listen(process.env.WS_PORT, () => console.log(
+        `🚀 Websocket server ready at :${process.env.WS_PORT}${server.graphqlPath}`,
+    ))
 })()
