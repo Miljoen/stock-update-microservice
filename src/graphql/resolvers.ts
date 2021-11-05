@@ -1,14 +1,20 @@
 import { pubSub } from './pub-sub'
 import { sendStockUpdate } from './mutations/send-stock-update'
 import { SendStockUpdateInput } from './inputs/SendStockUpdateInput'
+import { Context } from 'vm'
+import { AuthenticationError } from 'apollo-server-express'
 
 export const resolvers = {
     Mutation: {
         sendStockUpdate(
-            unused: undefined,
+            _: undefined,
             input: SendStockUpdateInput,
+            context: Context,
         ) {
-            console.log(unused)
+            if (context.authScope !== process.env.AUTHENTICATION) {
+                throw new AuthenticationError('Unauthenticated')
+            }
+
             return sendStockUpdate(input.input)
         },
     },

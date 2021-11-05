@@ -1,5 +1,6 @@
 require('dotenv').config()
 
+import { Request } from 'express/ts4.0'
 import { typeDefs } from './graphql/schema'
 import { resolvers } from './graphql/resolvers'
 
@@ -15,7 +16,12 @@ const { makeExecutableSchema } = require('@graphql-tools/schema')
     const httpServer = createServer(app)
 
     const schema = makeExecutableSchema({ typeDefs, resolvers })
-    const server = new ApolloServer({ schema })
+    const server = new ApolloServer({
+        schema,
+        context: ({ req }: { req: Request }) => ({
+            authScope: req.headers.authorization,
+        }),
+    })
 
     await server.start()
 
