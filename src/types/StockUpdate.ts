@@ -1,5 +1,5 @@
 export interface StockUpdate {
-    menuItemId: number,
+    menuItemStockId: number,
     stock: number,
     stockReserved: number,
 }

@@ -14,13 +14,13 @@ export const typeDefs = gql`
     }
 
     type StockUpdate {
-        menuItemId: Int!
+        menuItemStockId: Int!
         stock: Int!
         stockReserved: Int!
     }
 
     input SendStockUpdateInput {
-        menuItemId: Int!,
+        menuItemStockId: Int!
         stock: Int!
         stockReserved: Int!
     }

@@ -1,6 +1,6 @@
 export interface SendStockUpdateInput {
     input: {
-        menuItemId: number,
+        menuItemStockId: number,
         stock: number,
         stockReserved: number,
     }
